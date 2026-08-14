@@ -9,6 +9,7 @@ import SwiftUI
 import MapKit
 
 struct FormView: View {
+    let osmService: OverpassService = OverpassService()
     @State private var position: MapCameraPosition = .region(
             MKCoordinateRegion(
                 center: CLLocationCoordinate2D(
@@ -30,6 +31,7 @@ struct FormView: View {
     let transportationModes = ["On Foot", "Bycicle", "Car"] // Add public transport later
     @State private var selectedTransportMode: String = "Car"
     @State private var tagsToSearch: Set<PlaceType> = []
+    @State private var OSMElements: [OSMElement] = []
     
     var body: some View {
         NavigationStack{
@@ -152,6 +154,17 @@ struct FormView: View {
             
             Button {
                 
+                let definitions: [OSMQueryDefinition] = tagsToSearch.compactMap { PlaceTypeOSMTags.all[$0] }
+                
+                Task {
+                    do {
+                        OSMElements = try await osmService.fetch(definitions: definitions, coordinate: startLocation!, radius: travelRadius)
+                        print("Fetched \(OSMElements.count) OSM elements")
+                    } catch {
+                        print("Error fetching OSM elements: \(error)")
+                    }
+                }
+                    
             } label: {
                 Text("Submit")
             }
@@ -160,5 +173,4 @@ struct FormView: View {
 }
 
 #Preview {
-    FormView()
 }
