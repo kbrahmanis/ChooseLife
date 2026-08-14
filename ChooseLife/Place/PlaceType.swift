@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PlaceType: Codable {
+enum PlaceType: String, Codable, CaseIterable, Hashable {
     case hiking
     case camping
     case fishing
