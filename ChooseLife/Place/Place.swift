@@ -15,8 +15,10 @@ struct Place: Identifiable, Codable {
     var images: [String]?
     var type: PlaceType
     var estimatedPrice: PlacePrice
+    var website: String?
     var latitude: Double
     var longitude: Double
+    var address: String?
     var reviews: [Review]?
 }
 
